@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+
+  postgres:
+
+    image: postgres:17
+
+    container_name: hospital-postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: hospitalDB
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+
+    image: redis:7
+
+    container_name: hospital-redis
+
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres-data:

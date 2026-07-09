@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model Department{
+  id String @id @default(uuid())
+  name String 
+  description String?
+  users User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User{
+  id String @id @default(uuid())
+  employeeNumber String @unique
+  firstName String
+  middleName String?
+  lastName String
+
+  email String @unique
+  phone String @unique
+
+  password String
+
+  status UserStatus @default(ACTIVE)
+
+  departmentId String?
+  deprtment Department? @relation(fields: [departmentId], references: [id])
+
+  relos UserRole[]
+
+  refreshTokens RefreshToken[]
+
+  auditLogs AuditLog[]
+
+  lastLogin DateTime?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([email])
+  @@index([employeeNumber])
+}
+
+model Role {
+  id  String @id @default(uuid())
+  name String @unique
+  description String?
+
+  users UserRole[]
+  permissions RolePermission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  id          String @id @default(uuid())
+  name        String @unique
+  description String?
+  roles       RolePermission[]
+  createdAt   DateTime @default(now())
+}
+
+model UserRole {
+  id        String @id @default(uuid())
+  userId    String
+  roleId    String
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  @@unique([userId, roleId])
+}
+
+model RolePermission {
+  id            String @id @default(uuid())
+  roleId        String
+  permissionId  String
+
+  role          Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission    Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+  @@unique([roleId, permissionId])
+}
+
+model RefreshToken {
+  id          String @id @default(uuid())
+  token       String
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id          String @id @default(uuid())
+  action      String
+  entity      String
+  entityId    String?
+  oldData     Json?
+  newData     Json?
+  ipAddress   String?
+  userAgent   String?
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  @@index([userId])
+}
