@@ -4,7 +4,7 @@ export const health = async (req, res) => {
 
         success: true,
 
-        message: "Hospital API Running",
+        message: "Hospital API Running and testing is successful",
 
         timestamp: new Date()
 
