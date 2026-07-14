@@ -1,9 +1,13 @@
 import express from "express";
-import { register } from "./auth.controller.js";
-import { registerValidation } from "./auth.validator.js";
+import { login, Me, register } from "./auth.controller.js";
+import { loginValidation, registerValidation } from "./auth.validator.js";
+import validate from "../../shared/middleware/validate.middleware.js";
+import { authenticate } from "../../shared/middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router.post("/register", registerValidation, register);
+router.post("/login", loginValidation,validate, login);
+router.get("/me", authenticate, Me);
 
 export default router;

@@ -19,9 +19,10 @@ enum UserStatus {
 }
 
 model Department{
-  id String @id @default(uuid())
-  name String 
+  id    String @id @default(uuid())
+  name  String @unique
   description String?
+
   users User[]
 
   createdAt DateTime @default(now())
@@ -43,9 +44,9 @@ model User{
   status UserStatus @default(ACTIVE)
 
   departmentId String?
-  deprtment Department? @relation(fields: [departmentId], references: [id])
+  department Department? @relation(fields: [departmentId], references: [id])
 
-  relos UserRole[]
+  roles UserRole[]
 
   refreshTokens RefreshToken[]
 
