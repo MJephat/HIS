@@ -1,31 +1,38 @@
 import jwt from "jsonwebtoken";
 
-export const  authenticate = async (req, res, next) => {
-    try {
-        const authHeader = req.headers.authorization;
+export const authenticate = (req, res, next) => {
 
-        if(!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized: no token provided",
-            });
-        }
+    const authHeader = req.headers.authorization;
 
-        const token = authHeader.split(" ")[1];
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-
-    } catch (error) {
+    if (!authHeader) {
         return res.status(401).json({
             success: false,
-            message: "Unauthorized: invalid token",
-        });
-    } finally {
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error",
+            message: "No token provided",
         });
     }
-}
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        req.user = decoded;
+
+        return next();
+
+    } catch (err) {
+
+        console.log(err); // <-- IMPORTANT
+
+        return res.status(401).json({
+            success: false,
+            message: err.message,
+        });
+
+    }
+
+};

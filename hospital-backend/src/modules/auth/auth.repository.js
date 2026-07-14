@@ -74,21 +74,13 @@ export const findUserById = async (id) => {
         where: {
             id,
         },
-        include: {
+  include: {
             department: true,
             roles: {
                 include: {
-                    role: {
-                        include: {
-                            permissions: {
-                                include: {
-                                    permission: true,
-                                },
-                            },
-                        },
+                    role: true,
                     },
                 },
-            },
         },
     });
 };
