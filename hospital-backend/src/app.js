@@ -6,6 +6,7 @@ import pinoHttp from "pino-http";
 
 import logger from "./shared/config/logger.js";
 import healthRoutes from "./modules/health/health.routes.js";
+import authRoutes from "./modules/auth/auth.routes.js";
 
 
 const app = express();
@@ -23,5 +24,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/health", healthRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 export default app;
