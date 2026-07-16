@@ -2,7 +2,7 @@ import prisma from "../../shared/prisma/prisma.js";
 
 // Find user by email
 export const findUserByEmail = async (email) => {
-    return prisma.user.findUnique({
+    return prisma.user.findFirst({
         where: {
             email,
         },
@@ -74,13 +74,40 @@ export const findUserById = async (id) => {
         where: {
             id,
         },
-  include: {
+        include: {
             department: true,
             roles: {
                 include: {
-                    role: true,
+                    role: {
+                        include: {
+                            permissions: {
+                                include: {
+                                    permission: true,
+                                },
+                            },
+                        },
                     },
                 },
+            },
         },
     });
 };
+
+//finding roles by name
+export const findRoleByName = async (name) => {
+    return prisma.role.findUnique({
+        where: {
+            name,
+        },
+    });
+}
+
+// assigning role to user
+export const assignRole = async (userId, roleId) => {
+    return prisma.userRole.create({
+        data: {
+            userId,
+            roleId
+        }
+    });
+}

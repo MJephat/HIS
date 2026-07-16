@@ -1,36 +1,46 @@
 import jwt from "jsonwebtoken";
+import { findUserById } from "../../modules/auth/auth.repository.js";
 
-export const authenticate = (req, res, next) => {
-
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-        return res.status(401).json({
-            success: false,
-            message: "No token provided",
-        });
-    }
-
-    const token = authHeader.split(" ")[1];
+export const authenticate = async (req, res, next) => {
 
     try {
+
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader) {
+            return res.status(401).json({
+                success: false,
+                message: "No token provided.",
+            });
+        }
+
+        const token = authHeader.split(" ")[1];
 
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET
         );
 
-        req.user = decoded;
+        const user = await findUserById(decoded.id);
 
-        return next();
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "User not found.",
+            });
+        }
 
-    } catch (err) {
+        delete user.password;
 
-        console.log(err); // <-- IMPORTANT
+        req.user = user;
+
+        next();
+
+    } catch (error) {
 
         return res.status(401).json({
             success: false,
-            message: err.message,
+            message: error.message,
         });
 
     }
