@@ -1,93 +1,84 @@
-import departmentService from "../departments/department.service.js";
-import DepartmentService from "../departments/department.service.js"
+import ApiResponse from "../../shared/response/response.js";
+import DepartmentService from "../../modules/departments/department.service.js"
+import asyncHandler from "../../shared/middleware/asyncHandler.js";
 
-export const create = async (req, res) => {
-    try {
-        const department = await  DepartmentService.create(req.body);
+export const create = asyncHandler(async (req, res) => {
 
-        res.status(201).json({
-            success: true,
-            message: "Department created successfully.",
-            data: department,
-        });
-        } catch (err) {
-        
-        console.log("Department Error:", err);
+    const department = await DepartmentService.create(req.body);
 
-        return res.status(500).json({
-            success: false,
-            message: err.message,
-            // stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-        });
+    return ApiResponse.success(
 
-    }
-};
+        res,
 
-export const findAll = async (req, res) => {
-    try{
-        const department = await DepartmentService.findAll(
-            req.query
-        );
+        department,
 
-        res.json({
-            success: true,
-            data: department,
-        });
-    } catch (err){
-        res.status(500).json({
-            success: false,
-            message: err.message,
-        })
-    }
-};
+        "Department created successfully",
 
-export const findOne = async (req, res) => {
-    try{
-        const depart = await DepartmentService.findOne(req.param.id);
-        res.json({
-            success: true,
-            data: department,
-        });
-    }catch(err){
-        res.status(404).json({
-            success: false,
-            message: err.message,
-        })
-    }
-};
+        201
 
-export const update = async (req, res) => {
-    try{
-        const department = await DepartmentService.update(
-            req.params.id,
-            req.body
-        );
+    );
 
-        res.json({
-            success: true,
-            message: "Updated.",
-            data: department,
-        });
-    } catch (err){
-        res.status(400).json({
-            success: false,
-            message: err.message,
-        });
-    }
-}
+});
 
-export const remove = async (req, res) => {
-    try{
-        await DepartmentService.remove(req.params.is);
+export const findAll = asyncHandler(async (req, res) => {
 
-        res.json({
-            success: true,
-            message: "Department deleted.",
-        });
-    } catch(err){
-        res.status(400).json({
-            success:false,
-            message: err.message,
-        })
-    }
-}
+    const result = await DepartmentService.findAll(req.query);
+
+    return ApiResponse.paginated(
+
+        res,
+
+        result.departments,
+
+        result.page,
+
+        result.limit,
+
+        result.total
+
+    );
+
+});
+
+export const findOne = asyncHandler(async (req, res) => {
+
+    const department = await DepartmentService.findOne(req.params.id);
+
+    return ApiResponse.success(res, department);
+
+});
+
+export const update = asyncHandler(async (req, res) => {
+
+    const department = await DepartmentService.update(
+        req.params.id,
+        req.body
+    );
+
+    return ApiResponse.success(
+
+        res,
+
+        department,
+
+        "Department updated successfully"
+
+    );
+
+});
+
+export const remove = asyncHandler(async (req, res) => {
+
+    await DepartmentService.remove(req.params.id);
+
+    return ApiResponse.success(
+
+        res,
+
+        null,
+
+        "Department deleted successfully"
+
+    );
+
+});

@@ -8,6 +8,7 @@ import logger from "./shared/config/logger.js";
 import healthRoutes from "./modules/health/health.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import departmentRoutes from "./modules/departments/department.routes.js"
+import errorMiddleware from "./shared/middleware/error.middleware.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
+app.use(errorMiddleware);
 
 app.use("/api/v1/health", healthRoutes);
 app.use("/api/v1/auth", authRoutes);
