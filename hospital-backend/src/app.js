@@ -8,7 +8,9 @@ import logger from "./shared/config/logger.js";
 import healthRoutes from "./modules/health/health.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import departmentRoutes from "./modules/departments/department.routes.js"
+import patientRoutes from "./modules/patients/patients.routes.js"
 import errorMiddleware from "./shared/middleware/error.middleware.js";
+
 
 const app = express();
 
@@ -28,5 +30,6 @@ app.use(errorMiddleware);
 app.use("/api/v1/health", healthRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/departments", departmentRoutes);
+app.use("/api/v1/patients", patientRoutes);
 
 export default app;

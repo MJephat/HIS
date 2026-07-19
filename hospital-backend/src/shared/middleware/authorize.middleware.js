@@ -51,3 +51,43 @@ export const authorize = (...permissions) => {
     };
 
 };
+
+// export const authorize = (...permissions) => {
+
+//     return (req, res, next) => {
+
+//         const userPermissions = [];
+
+//         req.user.roles.forEach(userRole => {
+
+//             userRole.role.permissions.forEach(rolePermission => {
+
+//                 userPermissions.push(
+//                     rolePermission.permission.name
+//                 );
+
+//             });
+
+//         });
+
+//         console.log("Required:", permissions);
+//         console.log("User Permissions:", userPermissions);
+
+//         const allowed = permissions.some(permission =>
+//             userPermissions.includes(permission)
+//         );
+
+//         console.log("Allowed:", allowed);
+
+//         if (!allowed) {
+//             return res.status(403).json({
+//                 success: false,
+//                 message: "Forbidden",
+//             });
+//         }
+
+//         next();
+
+//     };
+
+// };

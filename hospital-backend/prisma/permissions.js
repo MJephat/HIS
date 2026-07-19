@@ -35,6 +35,7 @@ const permissions = [
     "pharmacy.create"
 
 ];
+
 async function main() {
 
     for (const permission of permissions) {

@@ -2,24 +2,32 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const user = await prisma.user.findFirst({
-    include: {
-        roles: {
-            include: {
-                role: {
-                    include: {
-                        permissions: {
-                            include: {
-                                permission: true,
+async function main() {
+
+    const users = await prisma.user.findMany({
+        include: {
+            roles: {
+                include: {
+                    role: {
+                        include: {
+                            permissions: {
+                                include: {
+                                    permission: true,
+                                },
                             },
                         },
                     },
                 },
             },
         },
-    },
-});
+    });
 
-console.dir(user, { depth: null });
+    console.dir(users, { depth: null });
 
-await prisma.$disconnect();
+}
+
+main()
+    .catch(console.error)
+    .finally(async () => {
+        await prisma.$disconnect();
+    });

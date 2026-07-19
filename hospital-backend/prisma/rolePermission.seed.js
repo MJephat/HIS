@@ -11,7 +11,7 @@ async function main() {
     });
 
     if (!admin) {
-        throw new Error("ADMIN role not found. Run the role seeder first.");
+        throw new Error("ADMIN role not found.");
     }
 
     const permissions = await prisma.permission.findMany();
@@ -19,17 +19,21 @@ async function main() {
     for (const permission of permissions) {
 
         await prisma.rolePermission.upsert({
+
             where: {
                 roleId_permissionId: {
                     roleId: admin.id,
                     permissionId: permission.id,
                 },
             },
+
             update: {},
+
             create: {
                 roleId: admin.id,
                 permissionId: permission.id,
             },
+
         });
 
     }

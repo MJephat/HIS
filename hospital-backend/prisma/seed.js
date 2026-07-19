@@ -38,8 +38,12 @@ async function main() {
     console.log("Roles seeded successfully.");
 }
 
+
 main()
     .catch(console.error)
     .finally(async () => {
         await prisma.$disconnect();
     });
+
+
+    

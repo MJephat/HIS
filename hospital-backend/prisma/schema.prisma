@@ -133,3 +133,100 @@ model AuditLog {
   createdAt   DateTime @default(now())
   @@index([userId])
 }
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+model Patient {
+
+  id              String   @id @default(uuid())
+
+  patientNumber   String   @unique
+
+  nationalId      String?  @unique
+
+  passportNumber  String?
+
+  firstName       String
+
+  middleName      String?
+
+  lastName        String
+
+  gender          Gender
+
+  dateOfBirth     DateTime
+
+  bloodGroup      BloodGroup?
+
+  maritalStatus   MaritalStatus?
+
+  phone           String
+
+  email           String?
+
+  address         String?
+
+  occupation      String?
+
+  nextOfKinName           String
+
+  nextOfKinPhone          String
+
+  nextOfKinRelationship   String
+
+  insuranceProvider String?
+
+  insuranceNumber   String?
+
+  isActive Boolean @default(true)
+
+  isDeleted Boolean @default(false)
+
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+}
+
+model Counter {
+  id        String   @id @default(uuid())
+
+  name      String   @unique
+
+  prefix    String
+
+  value     Int      @default(0)
+
+  digits    Int      @default(6)
+
+  resetYearly Boolean @default(false)
+
+  year      Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
