@@ -59,6 +59,8 @@ model User{
 
   lastLogin DateTime?
 
+  doctor Doctor?
+
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -161,72 +163,131 @@ enum BloodGroup {
 model Patient {
 
   id              String   @id @default(uuid())
-
   patientNumber   String   @unique
-
   nationalId      String?  @unique
-
   passportNumber  String?
-
   firstName       String
-
   middleName      String?
-
   lastName        String
-
   gender          Gender
-
   dateOfBirth     DateTime
-
   bloodGroup      BloodGroup?
-
   maritalStatus   MaritalStatus?
-
   phone           String
-
   email           String?
-
   address         String?
-
   occupation      String?
-
   nextOfKinName           String
-
   nextOfKinPhone          String
-
   nextOfKinRelationship   String
-
   insuranceProvider String?
-
   insuranceNumber   String?
-
   isActive Boolean @default(true)
-
   isDeleted Boolean @default(false)
-
   deletedAt DateTime?
-
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
-
 }
 
 model Counter {
   id        String   @id @default(uuid())
-
   name      String   @unique
-
   prefix    String
-
   value     Int      @default(0)
-
   digits    Int      @default(6)
-
   resetYearly Boolean @default(false)
-
   year      Int?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum DoctorStatus {
+  ACTIVE
+  ON_LEAVE
+  SUSPENDED
+  RETIRED
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  VISITING
+}
+
+model Specialization {
+
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String?
+  doctors         Doctor[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  @@index([name])
+
+}
+
+model Doctor {
+
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  specializationId    String
+  specialization       Specialization @relation(fields: [specializationId], references: [id])
+
+  licenseNumber       String   @unique
+  employeeNumber      String   @unique
+  consultationFee     Decimal  @db.Decimal(10,2)
+  employmentType      EmploymentType
+  status              DoctorStatus @default(ACTIVE)
+  yearsOfExperience   Int?
+  biography           String?
+  consultationRoom    String?
+  signature           String?
+  isAvailable         Boolean @default(true)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([licenseNumber])
+  @@index([employeeNumber])
+  @@index([status])
+
+   schedules DoctorSchedule[]
+  leaves    DoctorLeave[]
+}
+
+model DoctorSchedule {
+
+  id          String @id @default(uuid())
+
+  doctorId    String
+  doctor      Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  dayOfWeek   Int
+  startTime   String
+  endTime     String
+
+  isAvailable Boolean @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([doctorId])
+}
+
+model DoctorLeave {
+
+  id          String @id @default(uuid())
+
+  doctorId    String
+  doctor      Doctor @relation(fields:[doctorId], references:[id])
+
+  startDate   DateTime
+  endDate     DateTime
+
+  reason      String?
+
+  approved    Boolean @default(false)
+
+  createdAt   DateTime @default(now())
 }

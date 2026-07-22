@@ -15,4 +15,4 @@ router.put( "/:id", authenticate, authorize("patient.update"), updatePatientVali
 router.delete( "/:id", authenticate, authorize("patient.delete"), PatientController.remove);
 router.patch( "/:id/restore", authenticate, authorize("patient.update"), PatientController.restore);
 
-export default router;
+export default router

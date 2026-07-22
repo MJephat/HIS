@@ -1,7 +1,7 @@
 import prisma from "../../shared/prisma/prisma.js";
 
 /**
- * Shared include object
+ * Shared include object used by authenticated/profile requests.
  */
 const userInclude = {
     department: true,
@@ -21,12 +21,32 @@ const userInclude = {
 };
 
 /**
- * Find user by email
+ * Lean select used for login and registration checks.
+ * Keeping this small avoids loading roles/permissions for every login attempt.
+ */
+const authUserSelect = {
+    id: true,
+    employeeNumber: true,
+    firstName: true,
+    middleName: true,
+    lastName: true,
+    email: true,
+    phone: true,
+    password: true,
+    status: true,
+    departmentId: true,
+    lastLogin: true,
+    createdAt: true,
+    updatedAt: true,
+};
+
+/**
+ * Find user by email for auth operations.
  */
 export const findUserByEmail = async (email) => {
     return prisma.user.findUnique({
         where: { email },
-        include: userInclude,
+        select: authUserSelect,
     });
 };
 

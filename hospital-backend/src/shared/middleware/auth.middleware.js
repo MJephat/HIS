@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { findUserById } from "../../modules/auth/auth.repository.js";
+import { findUserByEmail, findUserById } from "../../modules/auth/auth.repository.js";
 
 export const authenticate = async (req, res, next) => {
 
@@ -35,6 +35,7 @@ export const authenticate = async (req, res, next) => {
         req.user = user;
 
         next();
+
 
     } catch (error) {
 
